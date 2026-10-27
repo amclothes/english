@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Անգլերեն՝ 1000 փուլ</title>
+<style>
+:root{--bg:#f3efe6;--card:#fffdf8;--ink:#1d2b2a;--mute:#6b7775;--line:#d9d2c0;--acc:#0f7b6c;--acc2:#e8590c;--ok:#2b8a3e;--bad:#c92a2a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14201f;--card:#1c2b2a;--ink:#eef3f1;--mute:#97a8a5;--line:#2f4442;--acc:#3cc9b1;--acc2:#ff8a4c;--ok:#69db7c;--bad:#ff8787;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14201f;--card:#1c2b2a;--ink:#eef3f1;--mute:#97a8a5;--line:#2f4442;--acc:#3cc9b1;--acc2:#ff8a4c;--ok:#69db7c;--bad:#ff8787;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif;line-height:1.5}
+main{max-width:560px;margin:0 auto;padding:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px}
+.fire{font-weight:700;font-size:1.15rem;color:var(--acc2)}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px}
+h1{font-size:1.7rem;margin:0 0 6px;line-height:1.2}h2{font-size:1.25rem;margin:0 0 10px}
+p{margin:0 0 12px}.mute{color:var(--mute)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 16px}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700;width:100%}
+@media (prefers-color-scheme:dark){.btn{color:#0b1a18}}
+.btn.alt{background:var(--card);color:var(--ink);border-color:var(--line)}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opts button{text-align:left;font-size:1.05rem}
+.opts button.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opts button.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.q{font-size:1.5rem;font-weight:700;margin:6px 0}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.path{height:12px;background:var(--line);border-radius:6px;overflow:hidden}.path i{display:block;height:100%;background:var(--acc2)}
+.row{display:grid;gap:10px}
+.week{display:flex;gap:6px;margin:8px 0 2px}.week span{flex:1;text-align:center;border-radius:8px;border:1px solid var(--line);padding:6px 0;font-size:.85rem}
+.week span.on{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+.call{background:#12201f;color:#eef3f1;border-radius:14px;padding:18px;text-align:center;position:relative}
+.call .me{position:absolute;right:12px;bottom:12px;width:84px;height:112px;object-fit:cover;border-radius:10px;background:#000;border:2px solid #3cc9b1;display:none}
+.call .name{font-weight:700;margin-top:6px}.call .sub{color:#97a8a5;font-size:.9rem}
+.say{background:#1f3634;border-radius:12px;padding:12px;margin:12px 0;min-height:60px;text-align:left}
+.call .opts button{background:#1f3634;color:#eef3f1;border-color:#2f4442}
+.call .opts button.ok{background:#2b8a3e}.call .opts button.bad{background:#c92a2a}
+#mouth{transition:d .08s}
+.talk #mouth{animation:m .25s infinite alternate}
+@keyframes m{from{ry:3}to{ry:9}}
+@media (prefers-reduced-motion:reduce){.talk #mouth{animation:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div class="fire" id="fire" aria-live="polite">🔥 0</div><div class="pill" id="lvl">Փուլ 1</div></div>
+<div id="view"></div>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var BANDS=["A1","A2","B1","B2","C1"],NAMES=["Սկսնակ","Տարրական","Միջին","Վերին միջին","Առաջադեմ"];
+var V=[[["apple","խնձոր"],["water","ջուր"],["house","տուն"],["cat","կատու"],["dog","շուն"],["book","գիրք"],["mother","մայր"],["father","հայր"],["bread","հաց"],["sun","արև"],["red","կարմիր"],["big","մեծ"],["friend","ընկեր"],["school","դպրոց"],["eat","ուտել"],["go","գնալ"]],
+[["travel","ճանապարհորդել"],["kitchen","խոհանոց"],["weather","եղանակ"],["ticket","տոմս"],["hospital","հիվանդանոց"],["cheap","էժան"],["early","շուտ"],["borrow","փոխ առնել"],["invite","հրավիրել"],["neighbor","հարևան"],["forget","մոռանալ"],["market","շուկա"],["holiday","արձակուրդ"],["tired","հոգնած"]],
+[["improve","բարելավել"],["opinion","կարծիք"],["decision","որոշում"],["environment","շրջակա միջավայր"],["experience","փորձ"],["advantage","առավելություն"],["challenge","մարտահրավեր"],["reliable","հուսալի"],["complain","գանգատվել"],["various","տարբեր"],["achieve","հասնել (նպատակի)"],["afford","թույլ տալ իրեն"]],
+[["reluctant","դժկամ"],["inevitable","անխուսափելի"],["struggle","պայքարել"],["consequence","հետևանք"],["ambiguous","երկիմաստ"],["sustain","պահպանել"],["overcome","հաղթահարել"],["regardless","անկախ"],["notion","պատկերացում"],["deliberate","կանխամտածված"]],
+[["ubiquitous","ամենուր տարածված"],["meticulous","մանրակրկիտ"],["ephemeral","անցողիկ"],["pragmatic","գործնական"],["scrutinize","մանրազնին ուսումնասիրել"],["resilient","դիմացկուն"],["eloquent","պերճախոս"],["mitigate","մեղմել"],["ostensibly","ակնհայտորեն"]]];
+var G=[[["She ___ a student.","is",["are","am"]],["I ___ two brothers.","have",["has","am"]],["They ___ at home.","are",["is","am"]],["___ you like tea?","Do",["Does","Are"]]],
+[["I ___ to the park yesterday.","went",["go","goes"]],["She is ___ than me.","taller",["more tall","tallest"]],["We ___ dinner now.","are having",["have","had"]],["He ___ his keys last week.","lost",["lose","loses"]]],
+[["If I ___ rich, I would travel.","were",["am","will be"]],["I have lived here ___ 2015.","since",["for","from"]],["The book ___ by millions.","was read",["read","reads"]],["She asked me where ___.","I lived",["did I live","do I live"]]],
+[["I wish I ___ earlier.","had left",["left","leave"]],["He denied ___ the window.","breaking",["to break","break"]],["By next year she ___ graduated.","will have",["will","has"]],["Not only ___ late, but rude.","was he",["he was","he is"]]],
+[["Hardly ___ he arrived when it rained.","had",["did","has"]],["Were it not ___ your help, I'd fail.","for",["of","with"]],["She insisted that he ___ present.","be",["is","was"]],["Little ___ he know about it.","did",["does","had"]]]];
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuf(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function band(L){return Math.min(4,Math.floor((L-1)/200))}
+function makeQ(b,r,hard){
+  var t=r(),n=hard?3:2;
+  if(t<.35){var g=G[b][Math.floor(r()*G[b].length)];return{p:"Լրացրու բաց թողածը",q:g[0],a:g[1],o:shuf([g[1]].concat(g[2]),r),say:g[0].replace("___","blank")}}
+  var v=V[b],w=v[Math.floor(r()*v.length)],toHy=t<.7,d=shuf(v.filter(function(x){return x!==w}),r).slice(0,n);
+  if(toHy)return{p:"Ի՞նչ է նշանակում",q:w[0],a:w[1],o:shuf([w[1]].concat(d.map(function(x){return x[1]})),r),say:w[0]};
+  return{p:"Ինչպե՞ս է անգլերեն",q:w[1],a:w[0],o:shuf([w[0]].concat(d.map(function(x){return x[0]})),r),say:""}}
+var S={level:1,fires:0,last:"",placed:false,days:[],best:1};
+function load(){try{var s=localStorage.getItem("eng1000");if(s)S=Object.assign(S,JSON.parse(s))}catch(e){}}
+function save(){try{localStorage.setItem("eng1000",JSON.stringify(S))}catch(e){}}
+function day(d){d=d||new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function yest(){var d=new Date();d.setDate(d.getDate()-1);return day(d)}
+function checkStreak(){if(S.last&&S.last!==day()&&S.last!==yest()){S.fires=0}}
+function addFire(){var t=day();if(S.last===t)return false;S.fires=(S.last===yest()?S.fires:0)+1;S.last=t;S.days=(S.days||[]).concat([t]).slice(-30);save();return true}
+function head(){$("fire").textContent="🔥 "+S.fires+(S.last===day()?"":" (այսօր դեռ չկա)");$("lvl").textContent="Փուլ "+S.level+" · "+BANDS[band(S.level)]}
+var V$=$("view");
+function home(){
+  head();var b=band(S.level),pct=Math.round(S.level/10)/1;
+  var wk="";for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var k=day(d);wk+='<span class="'+((S.days||[]).indexOf(k)>-1?"on":"")+'">'+["Կ","Ե","Ե","Չ","Հ","Ու","Շ"][d.getDay()]+(((S.days||[]).indexOf(k)>-1)?"🔥":"")+"</span>"}
+  V$.innerHTML='<div class="card"><h1>Սովորենք անգլերեն</h1><p class="mute">Մակարդակ՝ '+NAMES[b]+' ('+BANDS[b]+'). Առաջընթաց՝ '+S.level+' / 1000</p><div class="path"><i style="width:'+(S.level/10)+'%"></i></div></div>'+
+  '<div class="card"><h2>Կրակներ</h2><p class="mute">Անցիր մեկ փուլ ամեն օր, որ կրակը չհանգչի։</p><div class="week">'+wk+'</div></div>'+
+  '<div class="row"><button class="btn" id="go">Փուլ '+S.level+'-ը սկսել</button><button class="btn alt" id="callb">📞 Զանգ Աննային</button><button class="btn alt" id="redo">Նորից որոշել իմ մակարդակը</button></div>';
+  $("go").onclick=function(){play(S.level)};$("callb").onclick=call;$("redo").onclick=placement}
+function quiz(qs,done,title){
+  var i=0,ok=0;head();
+  function show(){
+    if(i>=qs.length){return done(ok,qs.length)}
+    var q=qs[i];
+    V$.innerHTML='<div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div><div class="card"><p class="mute">'+title+" · "+(i+1)+"/"+qs.length+'</p><p>'+q.p+'</p><div class="q">'+q.q+'</div><div class="opts" id="o"></div></div>';
+    q.o.forEach(function(t){var bt=document.createElement("button");bt.textContent=t;bt.onclick=function(){
+      var all=$("o").children;for(var k=0;k<all.length;k++){all[k].disabled=true;if(all[k].textContent===q.a)all[k].className="ok"}
+      if(t===q.a)ok++;else bt.className="bad";i++;setTimeout(show,900)};$("o").appendChild(bt)});
+    if(q.say&&q.say.indexOf(" ")<0)speak(q.say)}
+  show()}
+function play(L){
+  var r=rng(L*7919+13),b=band(L),qs=[];for(var i=0;i<5;i++)qs.push(makeQ(b,r,(L%200)>100));
+  quiz(qs,function(ok,n){
+    var pass=ok>=4,first=false;
+    if(pass){first=addFire();if(L===S.level)S.level=Math.min(1000,S.level+1);S.best=Math.max(S.best,S.level);save()}
+    head();
+    V$.innerHTML='<div class="card"><h1>'+(pass?"Փուլն անցար 🎉":"Մի փոքր էլ")+'</h1><p>Ճիշտ պատասխաններ՝ '+ok+' / '+n+'. '+(pass?(first?"Նոր կրակ ավելացավ՝ 🔥 "+S.fires+"։":"Այսօրվա կրակն արդեն կա։"):"Անցնելու համար պետք է առնվազն 4 ճիշտ։")+'</p></div><div class="row"><button class="btn" id="n">'+(pass?"Հաջորդ փուլը":"Կրկնել")+'</button><button class="btn alt" id="h">Գլխավոր</button></div>';
+    $("n").onclick=function(){play(pass?S.level:L)};$("h").onclick=home},"Փուլ "+L)}
+function placement(){
+  var r=rng(Date.now()%100000),qs=[];for(var b=0;b<5;b++){qs.push(makeQ(b,r,false));qs.push(makeQ(b,r,true))}
+  V$.innerHTML='<div class="card"><h1>Որոշենք քո մակարդակը</h1><p>10 հարց՝ հեշտից դժվար։ Եթե չգիտես, գուշակիր։ Ծրագիրը կընտրի քո մեկնարկային փուլը։</p><button class="btn" id="s">Սկսել</button></div>';
+  $("s").onclick=function(){
+    var res=[];var idx=0;var orig=qs;
+    quiz(qs,function(ok){},"Մակարդակի թեստ");
+    /* track per-question results via wrapper */
+  };
+  $("s").onclick=function(){placeRun(qs)}}
+function placeRun(qs){
+  var i=0,sc=[0,0,0,0,0];
+  function show(){
+    if(i>=qs.length){
+      var b=-1;for(var k=0;k<5;k++){if(sc[k]>=1)b=k;else break}
+      var start=b<0?1:b*200+1+(sc[b]===2?100:0);
+      if(b===4&&sc[4]===2)start=900;
+      S.level=Math.max(1,start);S.placed=true;S.best=Math.max(S.best,S.level);save();head();
+      V$.innerHTML='<div class="card"><h1>Մակարդակդ՝ '+BANDS[Math.max(0,b)]+'</h1><p>Կսկսես '+S.level+'-րդ փուլից։ Կրակը՝ ամեն օր մեկ փուլ։</p><button class="btn" id="g">Գնացինք</button></div>';
+      $("g").onclick=home;return}
+    var q=qs[i],bi=Math.floor(i/2);
+    V$.innerHTML='<div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div><div class="card"><p class="mute">Թեստ · '+(i+1)+'/10</p><p>'+q.p+'</p><div class="q">'+q.q+'</div><div class="opts" id="o"></div></div>';
+    q.o.forEach(function(t){var bt=document.createElement("button");bt.textContent=t;bt.onclick=function(){
+      var all=$("o").children;for(var k=0;k<all.length;k++){all[k].disabled=true;if(all[k].textContent===q.a)all[k].className="ok"}
+      if(t===q.a)sc[bi]++;else bt.className="bad";i++;setTimeout(show,700)};$("o").appendChild(bt)})}
+  show()}
+function speak(t){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;var c=$("callbox");if(c){c.classList.add("talk");u.onend=function(){c.classList.remove("talk")}}speechSynthesis.speak(u)}catch(e){}}
+var stream=null;
+function stopCam(){try{if(stream)stream.getTracks().forEach(function(t){t.stop()});stream=null}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
+function call(){
+  var b=band(S.level),r=rng(Date.now()%99999),n=0,good=0,turns=[];
+  var greet=["Hi! I'm Anna. Nice to meet you!","Hello! I'm Anna. Let's talk.","Good to see you! I'm Anna.","Welcome! I'm Anna.","Greetings! I'm Anna."][b];
+  for(var i=0;i<3;i++)turns.push(makeQ(b,r,true));
+  V$.innerHTML='<div class="call" id="callbox"><svg viewBox="0 0 120 120" width="130" height="130" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="#2f4442"/><path d="M18 62c0-30 20-48 42-48s42 18 42 48c-8-14-18-22-42-22s-34 8-42 22z" fill="#7a3b12"/><circle cx="60" cy="68" r="34" fill="#f1c9a5"/><path d="M26 62c10-22 20-26 34-26s26 6 34 26c-14-8-22-12-34-12s-20 4-34 12z" fill="#7a3b12"/><circle cx="47" cy="66" r="4" fill="#1d2b2a"/><circle cx="73" cy="66" r="4" fill="#1d2b2a"/><ellipse id="mouth" cx="60" cy="86" rx="9" ry="3" fill="#a02c2c"/></svg><div class="name">Anna</div><div class="sub">Զանգ · '+BANDS[b]+'</div><video class="me" id="me" muted playsinline autoplay></video><div class="say" id="say">Միացում…</div><div class="opts" id="o"></div><button class="btn alt" id="end" style="margin-top:12px">Ավարտել զանգը</button></div>';
+  $("end").onclick=function(){stopCam();home()};
+  try{navigator.mediaDevices.getUserMedia({video:true}).then(function(s){stream=s;var v=$("me");if(v){v.srcObject=s;v.style.display="block"}}).catch(function(){})}catch(e){}
+  function line(t,say){$("say").textContent=t;speak(say||t)}
+  function turn(){
+    if(n>=3){var f=addFire();head();line("Great job! You did "+good+" out of 3. See you tomorrow!","Great job! See you tomorrow!");$("o").innerHTML="";var bt=document.createElement("button");bt.textContent="Վերադառնալ";bt.onclick=function(){stopCam();home()};$("o").appendChild(bt);return}
+    var q=turns[n];var ask=q.p.indexOf("Լրացրու")===0?"Complete the sentence: "+q.q.replace("___","blank"):(q.p.indexOf("Ի՞նչ")===0?"What does the word "+q.q+" mean in Armenian?":"How do you say "+q.q+" in English?");
+    $("say").textContent=ask+(q.p.indexOf("Լրացրու")===0?"":"");speak(q.p.indexOf("Լրացրու")===0?ask:(q.p.indexOf("Ի՞նչ")===0?"What does the word "+q.say+" mean?":"How do you say it in English?"));
+    $("o").innerHTML="";q.o.forEach(function(t){var bt=document.createElement("button");bt.textContent=t;bt.onclick=function(){
+      var all=$("o").children;for(var k=0;k<all.length;k++){all[k].disabled=true;if(all[k].textContent===q.a)all[k].className="ok"}
+      var right=t===q.a;if(right)good++;else bt.className="bad";n++;
+      line(right?"Perfect! Well done.":"Almost! The answer is "+(/[Ա-֏]/.test(q.a)?"different":q.a)+".",right?"Perfect! Well done.":"Almost! Try again next time.");
+      setTimeout(turn,2200)};$("o").appendChild(bt)})}
+  setTimeout(function(){line(greet);setTimeout(turn,2600)},400)}
+load();checkStreak();save();
+if(!S.placed)placement();else home();
+</script>
+</body>
+</html>
