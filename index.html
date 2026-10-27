@@ -74,8 +74,8 @@ function makeQ(b,r,hard){
   if(toHy)return{p:"Ի՞նչ է նշանակում",q:w[0],a:w[1],o:shuf([w[1]].concat(d.map(function(x){return x[1]})),r),say:w[0]};
   return{p:"Ինչպե՞ս է անգլերեն",q:w[1],a:w[0],o:shuf([w[0]].concat(d.map(function(x){return x[0]})),r),say:""}}
 var S={level:1,fires:0,last:"",placed:false,days:[],best:1};
-function load(){try{var s=localStorage.getItem("eng1000");if(s)S=Object.assign(S,JSON.parse(s))}catch(e){}}
-function save(){try{localStorage.setItem("eng1000",JSON.stringify(S))}catch(e){}}
+function load(){try{var s=localStorage.getItem("eng1000b");if(s)S=Object.assign(S,JSON.parse(s))}catch(e){}}
+function save(){try{localStorage.setItem("eng1000b",JSON.stringify(S))}catch(e){}}
 function day(d){d=d||new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
 function yest(){var d=new Date();d.setDate(d.getDate()-1);return day(d)}
 function checkStreak(){if(S.last&&S.last!==day()&&S.last!==yest()){S.fires=0}}
@@ -87,21 +87,26 @@ function home(){
   var wk="";for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var k=day(d);wk+='<span class="'+((S.days||[]).indexOf(k)>-1?"on":"")+'">'+["Կ","Ե","Ե","Չ","Հ","Ու","Շ"][d.getDay()]+(((S.days||[]).indexOf(k)>-1)?"🔥":"")+"</span>"}
   V$.innerHTML='<div class="card"><h1>Սովորենք անգլերեն</h1><p class="mute">Մակարդակ՝ '+NAMES[b]+' ('+BANDS[b]+'). Առաջընթաց՝ '+S.level+' / 1000</p><div class="path"><i style="width:'+(S.level/10)+'%"></i></div></div>'+
   '<div class="card"><h2>Կրակներ</h2><p class="mute">Անցիր մեկ փուլ ամեն օր, որ կրակը չհանգչի։</p><div class="week">'+wk+'</div></div>'+
-  '<div class="row"><button class="btn" id="go">Փուլ '+S.level+'-ը սկսել</button><button class="btn alt" id="callb">📞 Զանգ Աննային</button><button class="btn alt" id="redo">Նորից որոշել իմ մակարդակը</button></div>';
-  $("go").onclick=function(){play(S.level)};$("callb").onclick=call;$("redo").onclick=placement}
+  '<div class="row"><button class="btn" id="go">Փուլ '+S.level+'-ը սկսել</button><button class="btn alt" id="callb">📞 Զանգ Աննային</button></div>';
+  $("go").onclick=function(){play(S.level)};$("callb").onclick=call}
 function quiz(qs,done,title){
   var i=0,ok=0;head();
   function show(){
     if(i>=qs.length){return done(ok,qs.length)}
     var q=qs[i];
+    if(q.k==="type"||q.k==="dict"){V$.innerHTML='<div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div><div class="card"><p class="mute">'+title+" · "+(i+1)+"/"+qs.length+'</p><p>'+q.p+'</p><div class="q" id="qq" style="cursor:pointer">'+q.q+'</div><input id="inp" autocomplete="off" autocapitalize="none" spellcheck="false" style="width:100%;font:inherit;font-size:1.2rem;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"><button class="btn" id="chk" style="margin-top:12px">Ստուգել</button><p id="fb" style="margin-top:12px"></p></div>';var inp=$("inp");inp.focus();if(q.say){speak(q.say);$("qq").onclick=function(){speak(q.say)}}var fin=false;var chk=function(){if(fin)return;fin=true;var good=inp.value.trim().toLowerCase()===q.a.toLowerCase();if(good)ok++;$("fb").innerHTML=good?"✅ Ճիշտ է":"❌ Ճիշտը՝ <b>"+q.a+"</b>";$("fb").style.color=good?"var(--ok)":"var(--bad)";inp.disabled=true;i++;setTimeout(show,1600)};$("chk").onclick=chk;inp.onkeydown=function(e){if(e.key==="Enter")chk()};return}
     V$.innerHTML='<div class="bar"><i style="width:'+(i/qs.length*100)+'%"></i></div><div class="card"><p class="mute">'+title+" · "+(i+1)+"/"+qs.length+'</p><p>'+q.p+'</p><div class="q">'+q.q+'</div><div class="opts" id="o"></div></div>';
     q.o.forEach(function(t){var bt=document.createElement("button");bt.textContent=t;bt.onclick=function(){
       var all=$("o").children;for(var k=0;k<all.length;k++){all[k].disabled=true;if(all[k].textContent===q.a)all[k].className="ok"}
       if(t===q.a)ok++;else bt.className="bad";i++;setTimeout(show,900)};$("o").appendChild(bt)});
-    if(q.say&&q.say.indexOf(" ")<0)speak(q.say)}
+    if(q.say&&q.say.indexOf(" ")<0)speak(q.say);if(q.k==="listen"){var qe=document.querySelector(".q");qe.style.cursor="pointer";qe.onclick=function(){speak(q.say)}}}
   show()}
+function vq(b,r,kind){var v=V[b],w=v[Math.floor(r()*v.length)],d=shuf(v.filter(function(x){return x!==w}),r).slice(0,3);
+  if(kind==="type")return{k:"type",p:"Գրիր անգլերեն",q:w[1],a:w[0]};
+  if(kind==="listen")return{k:"listen",p:"Լսիր և ընտրիր թարգմանությունը (սեղմիր 🔊՝ կրկնելու համար)",q:"🔊",say:w[0],a:w[1],o:shuf([w[1]].concat(d.map(function(x){return x[1]})),r)};
+  return{k:"dict",p:"Լսիր և գրիր լսածդ (սեղմիր 🔊՝ կրկնելու համար)",q:"🔊",say:w[0],a:w[0]}}
 function play(L){
-  var r=rng(L*7919+13),b=band(L),qs=[];for(var i=0;i<5;i++)qs.push(makeQ(b,r,(L%200)>100));
+  var r=rng(L*7919+13),b=band(L),qs=[];qs.push(makeQ(b,r,(L%200)>100));qs.push(vq(b,r,"type"));qs.push(vq(b,r,"listen"));qs.push(makeQ(b,r,(L%200)>100));qs.push(vq(b,r,"dict"));
   quiz(qs,function(ok,n){
     var pass=ok>=4,first=false;
     if(pass){first=addFire();if(L===S.level)S.level=Math.min(1000,S.level+1);S.best=Math.max(S.best,S.level);save()}
@@ -155,7 +160,7 @@ function call(){
       setTimeout(turn,2200)};$("o").appendChild(bt)})}
   setTimeout(function(){line(greet);setTimeout(turn,2600)},400)}
 load();checkStreak();save();
-if(!S.placed)placement();else home();
+home();
 </script>
 </body>
 </html>
